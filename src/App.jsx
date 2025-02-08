@@ -1,21 +1,18 @@
-import { createEffect } from "solid-js";
+import { onMount, createSignal, onCleanup } from "solid-js";
 import { basicSetup, EditorView } from "codemirror";
+import { oneDark } from "@codemirror/theme-one-dark";
 import { Menu, MenuItem, Submenu } from "@tauri-apps/api/menu";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import "./App.css";
+import Split from "split.js";
 
 function App() {
-  let editorRef = null;
+  let editorRef;
+  let editorView;
 
-  createEffect(() => {
-    if (editorRef) {
-      const view = new EditorView({
-        doc: "console.log('Hello world!')",
-        extensions: [basicSetup],
-        parent: editorRef,
-      });
-    }
-  });
+  const [script, setScript] = createSignal(
+    "main:\n    say Hello!\n    say How are you?\n    jump next\n\nnext:\n    say Bye!\n"
+  );
 
   async function createMenu() {
     const newItem = await MenuItem.new({
@@ -63,10 +60,43 @@ function App() {
     await getCurrentWebviewWindow().show();
   }
 
-  createMenu();
-  showWindow();
+  onMount(() => {
+    if (editorRef) {
+      editorView = new EditorView({
+        doc: script(),
+        extensions: [basicSetup],
+        parent: editorRef,
+      });
 
-  return <div ref={editorRef}></div>;
+      editorView.dom.style.height = "100%";
+    }
+
+    Split(["#editor", "#preview"], {
+      sizes: [50, 50],
+      minSize: 200,
+      gutterSize: 8,
+      cursor: "col-resize",
+    });
+
+    createMenu();
+    showWindow();
+  });
+
+  onCleanup(() => {
+    if (editorView) {
+      editorView.destroy();
+    }
+  });
+
+  return (
+    <div className="flex h-screen">
+      <div id="editor" ref={editorRef} className="h-full overflow-auto"></div>
+      <div
+        id="preview"
+        className="h-full bg-cover bg-center bg-[url('/park_winter.webp')]"
+      ></div>
+    </div>
+  );
 }
 
 export default App;

@@ -1,8 +1,22 @@
+import { createEffect } from "solid-js";
+import { basicSetup, EditorView } from "codemirror";
 import { Menu, MenuItem, Submenu } from "@tauri-apps/api/menu";
-import "./App.css";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
+import "./App.css";
 
 function App() {
+  let editorRef = null;
+
+  createEffect(() => {
+    if (editorRef) {
+      const view = new EditorView({
+        doc: "console.log('Hello world!')",
+        extensions: [basicSetup],
+        parent: editorRef,
+      });
+    }
+  });
+
   async function createMenu() {
     const newItem = await MenuItem.new({
       text: "New",
@@ -52,7 +66,7 @@ function App() {
   createMenu();
   showWindow();
 
-  return <h1 class="text-3xl font-bold underline">Hello world!</h1>;
+  return <div ref={editorRef}></div>;
 }
 
 export default App;

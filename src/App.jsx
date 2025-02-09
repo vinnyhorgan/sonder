@@ -1,6 +1,7 @@
 import { onMount, createSignal, onCleanup } from "solid-js";
 import { basicSetup, EditorView } from "codemirror";
 import { oneDark } from "@codemirror/theme-one-dark";
+import { language } from "./language";
 import { Menu, MenuItem, Submenu } from "@tauri-apps/api/menu";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import "./App.css";
@@ -64,7 +65,7 @@ function App() {
     if (editorRef) {
       editorView = new EditorView({
         doc: script(),
-        extensions: [basicSetup],
+        extensions: [basicSetup, language],
         parent: editorRef,
       });
 
@@ -72,7 +73,7 @@ function App() {
     }
 
     Split(["#editor", "#preview"], {
-      sizes: [50, 50],
+      sizes: [30, 70],
       minSize: 200,
       gutterSize: 8,
       cursor: "col-resize",

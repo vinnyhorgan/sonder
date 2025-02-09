@@ -8,6 +8,7 @@ import { Menu, MenuItem, Submenu } from "@tauri-apps/api/menu";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import "./App.css";
 import Split from "split.js";
+import Player from "./Player";
 
 function App() {
   let editorRef;
@@ -102,7 +103,9 @@ function App() {
       <div
         id="preview"
         className="h-full bg-cover bg-center bg-[url('/park_winter.webp')]"
-      ></div>
+      >
+        <Player script={script()} />
+      </div>
     </div>
   );
 }

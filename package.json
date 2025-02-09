@@ -12,8 +12,10 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@codemirror/commands": "^6.8.0",
     "@codemirror/language": "^6.10.8",
     "@codemirror/theme-one-dark": "^6.1.2",
+    "@codemirror/view": "^6.36.2",
     "@tailwindcss/vite": "^4.0.3",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",

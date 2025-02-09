@@ -1,5 +1,7 @@
 import { onMount, createSignal, onCleanup } from "solid-js";
-import { basicSetup, EditorView } from "codemirror";
+import { basicSetup } from "codemirror";
+import { EditorView, keymap } from "@codemirror/view";
+import { indentWithTab } from "@codemirror/commands";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { language } from "./language";
 import { Menu, MenuItem, Submenu } from "@tauri-apps/api/menu";
@@ -12,7 +14,7 @@ function App() {
   let editorView;
 
   const [script, setScript] = createSignal(
-    "main:\n    say Hello!\n    say How are you?\n    jump next\n\nnext:\n    say Bye!\n"
+    "main:\n  say Hello!\n  say How are you?\n  jump next\n\nnext:\n  say Bye!\n"
   );
 
   async function createMenu() {
@@ -65,7 +67,12 @@ function App() {
     if (editorRef) {
       editorView = new EditorView({
         doc: script(),
-        extensions: [basicSetup, language],
+        extensions: [
+          basicSetup,
+          language,
+          keymap.of([indentWithTab]),
+          EditorView.lineWrapping,
+        ],
         parent: editorRef,
       });
 
@@ -75,7 +82,7 @@ function App() {
     Split(["#editor", "#preview"], {
       sizes: [30, 70],
       minSize: 200,
-      gutterSize: 8,
+      gutterSize: 2,
       cursor: "col-resize",
     });
 
